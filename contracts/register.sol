@@ -12,7 +12,12 @@ contract register {
     admin=msg.sender;
   }
 
-  function registerUser(uint id,string memory name,uint password) public {
+  modifier onlyOwner {
+    require(admin==msg.sender);
+    _;
+  }
+
+  function registerUser(uint id,string memory name,uint password) onlyOwner public {
 
     require(!users[id]);
 
