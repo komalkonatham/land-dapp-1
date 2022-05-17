@@ -13,4 +13,5 @@ Land Registration using Blockchain is a decentralized app for government officia
 9. Deploy it and check with python test :heavy_check_mark:
 10. Validate Register with Smart Contract :heavy_check_mark:
 11. Create a Login Form :heavy_check_mark:
-12. Create a login route :x:
+12. Create a login route :heavy_check_mark:
+13. Validate Login with Smart Contract :x:

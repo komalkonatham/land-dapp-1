@@ -45,5 +45,15 @@ def registerUser():
     web3.eth.waitForTransactionReceipt(tx_hash)
     return (redirect('/login'))
 
+@app.route('/loginUser',methods=['POST','GET'])
+def loginUser():
+    id=int(request.form['userid'])
+    password=int(request.form['password'])
+    print(id,password)
+    contract,web3=connect_with_register_blockchain(0)
+    state=contract.functions.loginUser(id,password).call()
+    print(state)
+    return (redirect('/register'))
+
 if __name__=="__main__":
     app.run(debug=True)
