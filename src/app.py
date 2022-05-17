@@ -22,6 +22,22 @@ def connect_with_register_blockchain(acc):
     print('connected with blockchain')
     return (contract,web3)
 
+def connect_with_property_blockchain(acc):
+    blockchain_address="http://127.0.0.1:8545"
+    web3=Web3(HTTPProvider(blockchain_address))
+    if(acc==0):
+        acc=web3.eth.accounts[0]
+    web3.eth.defaultAccount=acc
+    artifact_path='../build/contracts/property.json'
+    contract_address=propertyContractAddress
+    with open(artifact_path) as f:
+        contract_json=json.load(f)
+        contract_abi=contract_json['abi']
+
+    contract=web3.eth.contract(address=contract_address,abi=contract_abi)
+    print('connected with blockchain')
+    return (contract,web3)
+
 @app.route('/')
 def indexPage():
     return render_template('index.html')
@@ -34,9 +50,25 @@ def registerPage():
 def loginPage():
     return render_template('login.html')
 
+@app.route('/registerProperty')
+def registerPropertyPage():
+    return render_template('registerproperty.html')
+
 @app.route('/dashboard')
 def dashboardPage():
-    return render_template('dashboard.html')
+    contract,web3=connect_with_property_blockchain(0)
+    _propertyId,_ownerId,_propertyData=contract.functions.viewProperties().call()
+    print(_propertyId,_ownerId,_propertyData)
+    data=[]
+    try:
+        for i in range(len(_propertyData)):
+            dummy=[]
+            dummy.append(_propertyId[i])
+            dummy.append(_ownerId[i][:-1])
+            dummy.append(_propertyData)
+    except:
+        data=['NA','NA','NA']
+    return render_template('dashboard.html',len=len(data),dashboard_data=data)
 
 @app.route('/registerUser',methods=['POST','GET'])
 def registerUser():

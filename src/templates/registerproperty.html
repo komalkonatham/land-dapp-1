@@ -64,22 +64,27 @@
 	<section>
 		<div class="container">
             <center><h1>Welcome to Land Dapp</h1></center> <br/>
-            <div class="table-responsive-sm">
-            <table class="table table-bordered">
-                <tr>
-                    <th>Property Id</th>
-                    <th>Property Owner</th>
-                    <th>Property Data</th>
-                </tr>
-                {%for i in range(0, len)%}
-                <tr>
-                    <td>{{dashboard_data[i][0]}}</td>
-                    <td>{{dashboard_data[i][1]}}</td>
-                    <td>{{dashboard_data[i][2]}}</td>
-                </tr>
-                {%endfor%}
-            </table>
-            </div>
+            <h2>Register your Property</h2> <br/>
+			<form action="/registerPropertyForm" method="POST">
+				  
+				  <div class="form-group">
+					 <label for="propertyId">Your Property Id:</label>
+					 <input type="number" class="form-control" id="propertyId" placeholder="Enter your propertyId" name="propertyId">
+				  </div>
+				  
+				  <div class="form-group">
+					<label for="ownerId">Owner id:</label>
+					<input type="number" class="form-control" id="ownerId" placeholder="Enter Owner Id" name="ownerId">
+				 </div>
+
+				  <div class="form-group">
+					<label for="propertyData">Enter Property Data:</label>
+					<input type="text" class="form-control" id="propertyData" placeholder="Enter your propertyData" name="propertyData">
+				  </div>
+			  			  
+				 
+				  <button type="submit" class="btn btn-warning btn-register">Register Property</button>
+				  </form>
         </div>
 	</section>
 

@@ -16,4 +16,5 @@ Land Registration using Blockchain is a decentralized app for government officia
 12. Create a login route :heavy_check_mark:
 13. Validate Login with Smart Contract :heavy_check_mark:
 14. Create a Dashboard route :heavy_check_mark:
-15. Create Add Property Page :x:
+15. Create Add Property Page :heavy_check_mark:
+16. Create Register Property Route :x:
