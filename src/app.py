@@ -2,6 +2,9 @@ from flask import Flask, redirect,render_template,request
 
 app=Flask(__name__)
 
+propertyContractAddress='0xb27C8CCCe24dfe250e01a8a6D5Be8e92842687B6'
+registerContractAddress='0xB77299E6860F38F9a85D4aD07EE13F5deDda4ed1'
+
 @app.route('/')
 def indexPage():
     return render_template('index.html')
