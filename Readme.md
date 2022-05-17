@@ -20,4 +20,5 @@ Land Registration using Blockchain is a decentralized app for government officia
 16. Create Register Property Route :heavy_check_mark:
 17. Create OTP pages for register and register property :heavy_check_mark:
 18. Validated OTP pages through smart contract :heavy_check_mark:
-19. Design Buy Property Page :x:
+19. Design Transfer Property Page :heavy_check_mark:
+20. Validate Transfer Property Page with smart contract :heavy_check_mark:

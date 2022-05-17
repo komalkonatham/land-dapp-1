@@ -50,8 +50,8 @@
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav m-auto">
 	        	<li class="nav-item"><a href="/dashboard" class="nav-link">Home</a></li>
-	        	<li class="nav-item active"><a href="/registerProperty" class="nav-link">Register Property</a></li>
-				<li class="nav-item"><a href="/transferProperty" class="nav-link">Transfer Property</a></li>
+	        	<li class="nav-item"><a href="/registerProperty" class="nav-link">Register Property</a></li>
+				<li class="nav-item active"><a href="/transferProperty" class="nav-link">Transfer Property</a></li>
                 <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
 	        </ul>
 	      </div>
@@ -63,8 +63,8 @@
 	<section>
 		<div class="container">
             <center><h1>Welcome to Land Dapp</h1></center> <br/>
-            <h2>Register your Property</h2> <br/>
-			<form action="/registerPropertyForm" method="POST">
+            <h2>Transfer your Property</h2> <br/>
+			<form action="/transferPropertyForm" method="POST">
 				  
 				  <div class="form-group">
 					 <label for="propertyId">Your Property Id:</label>
@@ -72,17 +72,12 @@
 				  </div>
 				  
 				  <div class="form-group">
-					<label for="ownerId">Owner id:</label>
-					<input type="number" class="form-control" id="ownerId" placeholder="Enter Owner Id" name="ownerId">
+					<label for="buyerId">Buyer unique id:</label>
+					<input type="number" class="form-control" id="buyerId" placeholder="Enter Buyer Id" name="buyerId">
 				 </div>
-
-				  <div class="form-group">
-					<label for="propertyData">Enter Property Data:</label>
-					<input type="text" class="form-control" id="propertyData" placeholder="Enter your propertyData" name="propertyData">
-				  </div>
-			  			  
+		  			  
 				 
-				  <button type="submit" class="btn btn-warning btn-register">Register Property</button>
+				  <button type="submit" class="btn btn-warning btn-register">Transfer Property</button>
 				  </form>
         </div>
 	</section>

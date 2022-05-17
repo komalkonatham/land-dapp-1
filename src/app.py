@@ -183,6 +183,54 @@ def registerPropertyForm():
     session['email']=emailId
     return render_template('propertyotp.html')
 
+@app.route('/transferProperty')
+def transferPropertyPage():
+    return render_template('transferproperty.html')
+
+@app.route('/transferPropertyForm',methods=['POST','GET'])
+def transferPropertyForm():
+    global otp_created
+    propertyId=int(request.form['propertyId'])
+    buyerId=int(request.form['buyerId'])
+    contract,web3=connect_with_property_blockchain(0)
+    _propertyId,_ownerId,_propertyData=contract.functions.viewProperties().call()
+    propertyIndex=_propertyId.index(propertyId)
+    ownerId=_ownerId[propertyIndex][-1]
+    contract,web3=connect_with_register_blockchain(0)
+    _ids,_names,_emails=contract.functions.viewUsers().call()
+    print(_ids,_names,_emails)
+    ownerIndex=_ids.index(ownerId)
+    emailId=_emails[ownerIndex]
+    otp_created=random.randint(1800,9999)
+    
+    msg = MIMEMultipart()
+    msg['From'] = 'landblockchain56@gmail.com'
+    msg['To'] = emailId
+    msg['Subject']= 'Your OTP to transfer your property'
+    msg.attach(MIMEText("OTP to transfer: "+str(otp_created), 'plain'))
+    text = msg.as_string()
+    smtpObj.sendmail('landblockchain56@gmail.com',msg['To'],text)
+    session['buyerId']=buyerId
+    session['propertyId']=propertyId
+    return render_template('transferpropertyotp.html')
+
+@app.route('/transferpropertyOTPForm',methods=['GET','POST'])
+def transferpropertyOTPForm():
+    global otp_created
+    otp=int(request.form['otp'])
+    if otp==otp_created:
+        buyerId=session['buyerId']
+        propertyId=session['propertyId']
+        contract,web3=connect_with_property_blockchain(0)
+        tx_hash=contract.functions.buyProperty(propertyId,buyerId).transact()
+        web3.eth.waitForTransactionReceipt(tx_hash)
+        return (redirect('/dashboard'))
+    else:
+        return (redirect('/transferProperty'))
+        
+@app.route('/logout')
+def logoutPage():
+    return (redirect('/'))
 
 if __name__=="__main__":
     app.run(debug=True)
