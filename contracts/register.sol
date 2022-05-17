@@ -4,6 +4,7 @@ pragma solidity >=0.4.22 <0.9.0;
 contract register {
   uint[] _ids;
   string[] _names;
+  string[] _emails;
   uint[] _passwords;
   address admin;
   mapping(uint => bool ) users;
@@ -17,13 +18,14 @@ contract register {
     _;
   }
 
-  function registerUser(uint id,string memory name,uint password) onlyAdmin public {
+  function registerUser(uint id,string memory email,string memory name,uint password) onlyAdmin public {
 
     require(!users[id]);
 
     _ids.push(id);
     _names.push(name);
     _passwords.push(password);
+    _emails.push(email);
 
   }
 
@@ -36,6 +38,10 @@ contract register {
       }
     }
     return false;
+  }
+
+  function viewUsers() public view returns (uint[] memory,string[] memory,string[] memory) {
+    return (_ids,_names,_emails);
   }
 
 }

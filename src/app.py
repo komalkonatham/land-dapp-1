@@ -1,10 +1,25 @@
-from flask import Flask, redirect,render_template,request
+from flask import Flask, redirect,render_template,request, session
 import json
 from web3 import Web3,HTTPProvider
-app=Flask(__name__)
+import smtplib
+import random
 
-propertyContractAddress='0xb27C8CCCe24dfe250e01a8a6D5Be8e92842687B6'
-registerContractAddress='0xB77299E6860F38F9a85D4aD07EE13F5deDda4ed1'
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+smtpObj=smtplib.SMTP('smtp.gmail.com',587)
+smtpObj.starttls()
+smtpObj.login('landblockchain56@gmail.com','m@keskilled')
+otp_created=0
+
+app=Flask(__name__)
+app.secret_key='makeskilled'
+
+propertyContractAddress='0x40f68d86C36AFf7eD404Ee9Ca01fF88Cb2b51897'
+registerContractAddress='0xE8997b931a1b044395f3f4D56aEF0e4BD35Af1E2'
 
 def connect_with_register_blockchain(acc):
     blockchain_address="http://127.0.0.1:8545"
@@ -42,6 +57,34 @@ def connect_with_property_blockchain(acc):
 def indexPage():
     return render_template('index.html')
 
+@app.route('/linkEmail')
+def linkEmailPage():
+    return render_template('linkemail.html')
+
+@app.route('/linkEmailForm',methods=['POST','GET'])
+def linkEmailForm():
+    global otp_created
+    emailId=request.form['emailId']
+    otp_created=random.randint(1800,9999)
+    
+    msg = MIMEMultipart()
+    msg['From'] = 'landblockchain56@gmail.com'
+    msg['To'] = emailId
+    msg['Subject']= 'Your OTP as User registration'
+    msg.attach(MIMEText("OTP to register: "+str(otp_created), 'plain'))
+    text = msg.as_string()
+    smtpObj.sendmail('landblockchain56@gmail.com',msg['To'],text)
+    session['email']=emailId
+    return render_template('otp.html')
+
+@app.route('/verifyOTPForm',methods=['POST','GET'])
+def verifyOTPFormPage():
+    global otp_created
+    otp=request.form['otp']
+    if int(otp)==otp_created:
+        return redirect('/register')
+    else:
+        return redirect('/linkEmail')
 @app.route('/register')
 def registerPage():
     return render_template('register.html')
@@ -59,13 +102,19 @@ def dashboardPage():
     contract,web3=connect_with_property_blockchain(0)
     _propertyId,_ownerId,_propertyData=contract.functions.viewProperties().call()
     print(_propertyId,_ownerId,_propertyData)
+    contract,web3=connect_with_register_blockchain(0)
+    _ids,_names,_emails=contract.functions.viewUsers().call()
+    print(_ids,_names,_emails)
+
     data=[]
     try:
-        for i in range(len(_propertyData)):
+        for i in range(len(_propertyId)):
             dummy=[]
+            ownerIndex=_ids.index(_ownerId[i][-1])
             dummy.append(_propertyId[i])
-            dummy.append(_ownerId[i][:-1])
-            dummy.append(_propertyData)
+            dummy.append(_names[ownerIndex])
+            dummy.append(_propertyData[i])
+            data.append(dummy)
     except:
         data=['NA','NA','NA']
     return render_template('dashboard.html',len=len(data),dashboard_data=data)
@@ -75,9 +124,10 @@ def registerUser():
     name=request.form['username']
     id=request.form['userid']
     password=request.form['password']
+    email=session['email']
     print(name,id,password)
     contract,web3=connect_with_register_blockchain(0)
-    tx_hash=contract.functions.registerUser(int(id),name,int(password)).transact()
+    tx_hash=contract.functions.registerUser(int(id),email,name,int(password)).transact()
     web3.eth.waitForTransactionReceipt(tx_hash)
     return (redirect('/login'))
 
@@ -90,6 +140,49 @@ def loginUser():
     state=contract.functions.loginUser(id,password).call()
     print(state)
     return (redirect('/dashboard'))
+
+@app.route('/propertyOTPForm',methods=['POST','GET'])
+def propertyOTPFormPage():
+    global otp_created
+    otp=request.form['otp']
+    if int(otp)==otp_created:
+        propertyId=session['propertyId']
+        ownerId=session['ownerId']
+        propertyData=session['propertyData']
+        contract,web3=connect_with_property_blockchain(0)
+        tx_hash=contract.functions.registerProperty(propertyId,ownerId,propertyData).transact()
+        web3.eth.waitForTransactionReceipt(tx_hash)
+        return (redirect('/dashboard'))
+    else:
+        return (redirect('/dashboard'))
+
+@app.route('/registerPropertyForm',methods=['POST','GET'])
+def registerPropertyForm():
+    global otp_created
+    propertyId=int(request.form['propertyId'])
+    ownerId=int(request.form['ownerId'])
+    propertyData=request.form['propertyData']
+    print(propertyId,ownerId,propertyData)
+    session['propertyId']=propertyId
+    session['ownerId']=ownerId
+    session['propertyData']=propertyData
+    contract,web3=connect_with_register_blockchain(0)
+    _ids,_names,_emails=contract.functions.viewUsers().call()
+    print(_ids,_names,_emails)
+    ownerIndex=_ids.index(ownerId)
+    emailId=_emails[ownerIndex]
+    otp_created=random.randint(1800,9999)
+    
+    msg = MIMEMultipart()
+    msg['From'] = 'landblockchain56@gmail.com'
+    msg['To'] = emailId
+    msg['Subject']= 'Your OTP to register your property'
+    msg.attach(MIMEText("OTP to register: "+str(otp_created), 'plain'))
+    text = msg.as_string()
+    smtpObj.sendmail('landblockchain56@gmail.com',msg['To'],text)
+    session['email']=emailId
+    return render_template('propertyotp.html')
+
 
 if __name__=="__main__":
     app.run(debug=True)
