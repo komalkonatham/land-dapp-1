@@ -22,3 +22,24 @@ Land Registration using Blockchain is a decentralized app for government officia
 18. Validated OTP pages through smart contract :heavy_check_mark:
 19. Design Transfer Property Page :heavy_check_mark:
 20. Validate Transfer Property Page with smart contract :heavy_check_mark:
+
+# Softwares
+1. NodeJS
+2. Truffle Suite
+3. Ganache
+4. Python3
+5. VS Code
+
+# Packages
+1. flask
+2. web3
+
+# Execution Process
+1. Clone the Repo
+2. Launch Ganache
+3. Compile Smart Contract (truffle compile)
+4. Migrate Smart Contract (truffle migrate)
+5. Run the server(python src/app.py)
+
+# Questions
+For questions, do reach me on <a href="https://linkedin.com/in/MadhuPIoT">LinkedIn</a>
