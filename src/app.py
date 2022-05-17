@@ -34,6 +34,10 @@ def registerPage():
 def loginPage():
     return render_template('login.html')
 
+@app.route('/dashboard')
+def dashboardPage():
+    return render_template('dashboard.html')
+
 @app.route('/registerUser',methods=['POST','GET'])
 def registerUser():
     name=request.form['username']
@@ -53,7 +57,7 @@ def loginUser():
     contract,web3=connect_with_register_blockchain(0)
     state=contract.functions.loginUser(id,password).call()
     print(state)
-    return (redirect('/register'))
+    return (redirect('/dashboard'))
 
 if __name__=="__main__":
     app.run(debug=True)
