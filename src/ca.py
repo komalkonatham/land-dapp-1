@@ -1,0 +1,2 @@
+propertyContractAddress='0xF52102e3893a30857bEC5Cb49aEEc889930c7F00'
+registerContractAddress='0xf9304E54E51D110617a9201BE42f302290ee2176'

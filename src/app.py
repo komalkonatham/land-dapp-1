@@ -1,25 +1,15 @@
 from flask import Flask, redirect,render_template,request, session
 import json
 from web3 import Web3,HTTPProvider
-import smtplib
+from otp import *
 import random
+import time
+from ca import *
 
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email import encoders
-from email.mime.base import MIMEBase
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-smtpObj=smtplib.SMTP('smtp.gmail.com',587)
-smtpObj.starttls()
-smtpObj.login('landblockchain56@gmail.com','m@keskilled')
 otp_created=0
 
 app=Flask(__name__)
 app.secret_key='makeskilled'
-
-propertyContractAddress='0x40f68d86C36AFf7eD404Ee9Ca01fF88Cb2b51897'
-registerContractAddress='0xE8997b931a1b044395f3f4D56aEF0e4BD35Af1E2'
 
 def connect_with_register_blockchain(acc):
     blockchain_address="http://127.0.0.1:8545"
@@ -66,14 +56,16 @@ def linkEmailForm():
     global otp_created
     emailId=request.form['emailId']
     otp_created=random.randint(1800,9999)
-    
-    msg = MIMEMultipart()
-    msg['From'] = 'landblockchain56@gmail.com'
-    msg['To'] = emailId
-    msg['Subject']= 'Your OTP as User registration'
-    msg.attach(MIMEText("OTP to register: "+str(otp_created), 'plain'))
-    text = msg.as_string()
-    smtpObj.sendmail('landblockchain56@gmail.com',msg['To'],text)
+    verifyIdentity(emailId)
+    while True:
+        try:
+            a=sendotp(otp_created,'OTP to register',emailId)
+            if(a):
+                break
+            else:
+                continue
+        except:
+            time.sleep(10)
     session['email']=emailId
     return render_template('otp.html')
 
@@ -173,13 +165,16 @@ def registerPropertyForm():
     emailId=_emails[ownerIndex]
     otp_created=random.randint(1800,9999)
     
-    msg = MIMEMultipart()
-    msg['From'] = 'landblockchain56@gmail.com'
-    msg['To'] = emailId
-    msg['Subject']= 'Your OTP to register your property'
-    msg.attach(MIMEText("OTP to register: "+str(otp_created), 'plain'))
-    text = msg.as_string()
-    smtpObj.sendmail('landblockchain56@gmail.com',msg['To'],text)
+    while True:
+        try:
+            a=sendotp(otp_created,'OTP to register property',emailId)
+            if(a):
+                break
+            else:
+                continue
+        except:
+            time.sleep(10)
+            continue
     session['email']=emailId
     return render_template('propertyotp.html')
 
@@ -203,13 +198,16 @@ def transferPropertyForm():
     emailId=_emails[ownerIndex]
     otp_created=random.randint(1800,9999)
     
-    msg = MIMEMultipart()
-    msg['From'] = 'landblockchain56@gmail.com'
-    msg['To'] = emailId
-    msg['Subject']= 'Your OTP to transfer your property'
-    msg.attach(MIMEText("OTP to transfer: "+str(otp_created), 'plain'))
-    text = msg.as_string()
-    smtpObj.sendmail('landblockchain56@gmail.com',msg['To'],text)
+    while True:
+        try:
+            a=sendotp(otp_created,'OTP to transfer property',emailId)
+            if(a):
+                break
+            else:
+                continue
+        except:
+            time.sleep(10)
+            continue
     session['buyerId']=buyerId
     session['propertyId']=propertyId
     return render_template('transferpropertyotp.html')
