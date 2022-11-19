@@ -101,8 +101,8 @@ def registerPropertyPage():
 @app.route('/dashboard')
 def dashboardPage():
     contract,web3=connect_with_property_blockchain(0)
-    _propertyId,_ownerId,_propertyData=contract.functions.viewProperties().call()
-    print(_propertyId,_ownerId,_propertyData)
+    _propertyId,_ownerId,_propertyData,_size=contract.functions.viewProperties().call()
+    print(_propertyId,_ownerId,_propertyData,_size)
     contract,web3=connect_with_register_blockchain(0)
     _ids,_names,_emails=contract.functions.viewUsers().call()
     print(_ids,_names,_emails)
@@ -115,6 +115,7 @@ def dashboardPage():
             dummy.append(_propertyId[i])
             dummy.append(_names[ownerIndex])
             dummy.append(_propertyData[i])
+            dummy.append(_size[i])
             data.append(dummy)
     except:
         data=['NA','NA','NA']
@@ -165,8 +166,9 @@ def propertyOTPFormPage():
         propertyId=session['propertyId']
         ownerId=session['ownerId']
         propertyData=session['propertyData']
+        propertysize=session['propertysize']
         contract,web3=connect_with_property_blockchain(0)
-        tx_hash=contract.functions.registerProperty(propertyId,ownerId,propertyData).transact()
+        tx_hash=contract.functions.registerProperty(propertyId,ownerId,propertyData,propertysize).transact()#add data of land to block
         web3.eth.waitForTransactionReceipt(tx_hash)
         return (redirect('/dashboard'))
     else:
@@ -178,10 +180,12 @@ def registerPropertyForm():
     propertyId=int(request.form['propertyId'])
     ownerId=int(request.form['ownerId'])
     propertyData=request.form['propertyData']
+    propertysize=request.form['propertysize']
     print(propertyId,ownerId,propertyData)
     session['propertyId']=propertyId
     session['ownerId']=ownerId
     session['propertyData']=propertyData
+    session['propertysize']=propertysize
     contract,web3=connect_with_register_blockchain(0)
     _ids,_names,_emails=contract.functions.viewUsers().call()
     print(_ids,_names,_emails)

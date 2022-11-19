@@ -1,2 +1,2 @@
-propertyContractAddress='0xBa2E9C34BB6582038A0006f2cD582BB2C2AddEB2'
-registerContractAddress='0x85bad95e4E7867a006552F90b87bC6Db0ce2D17f'
+propertyContractAddress='0x5F05C8Fca2fD1CB8cb67521eFa4dA65DE84F2fb3'
+registerContractAddress='0x83A39CA2e994239437EE2595B0d27AE30D08CD2A'

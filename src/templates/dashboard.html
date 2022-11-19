@@ -71,12 +71,14 @@
                     <th>Property Id</th>
                     <th>Property Owner</th>/
                     <th>Property Data</th>
+					<th>Property size</th>
                 </tr>
                 {%for i in range(0, len)%}
                 <tr>
                     <td>{{dashboard_data[i][0]}}</td>
                     <td>{{dashboard_data[i][1]}}</td>
                     <td>{{dashboard_data[i][2]}}</td>
+					<td>{{dashboard_data[i][3]}}  cents</td>
                 </tr>
                 {%endfor%}
             </table>
