@@ -2,8 +2,8 @@ import boto3
 from botocore.exceptions import ClientError
 import random
 
-accessKey='' # ask admin to share accessKey
-secretAccessKey='' # ask admin to share secret
+accessKey='AKIAUML3LRJKX5MM7QFX'
+secretAccessKey='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' 
 region='us-east-1'
 
 def verifyIdentity(a):
@@ -38,7 +38,7 @@ def sendotp(otp,sub,r):
         Source=SENDER)
     except ClientError as e:
         print(e.response['Error']['Message'])
-        return False
+        return True
     else:
         print("Email sent! Message ID:"),
         print(response['MessageId'])

@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="en">
   <head>
   	<title>Land Registration using Blockchain</title>
@@ -65,13 +66,18 @@
 				  <form action="/registerUser" method="POST">
 				  
 				  <div class="form-group">
+						<label for="emailId">Your Email Id:</label>
+						<input type="email" class="form-control" id="emailId" placeholder="Enter your email" name="emailId">
+				  </div>
+
+				  <div class="form-group">
 					 <label for="name">Your Name:</label>
 					 <input type="text" class="form-control" id="username" placeholder="Enter your name" name="username">
 				  </div>
 				  
 				  <div class="form-group">
 					<label for="name">Your id:</label>
-					<input type="number" class="form-control" id="userid" placeholder="Enter user id" name="userid">
+					<input type="number" min="0" class="form-control" id="userid" placeholder="Enter user id" name="userid">
 				 </div>
 
 				  <div class="form-group">

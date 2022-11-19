@@ -56,6 +56,7 @@ def linkEmailForm():
     global otp_created
     emailId=request.form['emailId']
     otp_created=random.randint(1800,9999)
+    print(otp_created)
     verifyIdentity(emailId)
     while True:
         try:
@@ -74,6 +75,14 @@ def verifyOTPFormPage():
     global otp_created
     otp=request.form['otp']
     if int(otp)==otp_created:
+        name = session['name']
+        id = session['id']    
+        password=session['password']
+        email=session['email']
+        print(name,id,password)
+        contract,web3=connect_with_register_blockchain(0)
+        tx_hash=contract.functions.registerUser(int(id),email,name,int(password)).transact()
+        web3.eth.waitForTransactionReceipt(tx_hash)    
         return redirect('/register')
     else:
         return redirect('/linkEmail')
@@ -116,12 +125,25 @@ def registerUser():
     name=request.form['username']
     id=request.form['userid']
     password=request.form['password']
-    email=session['email']
-    print(name,id,password)
-    contract,web3=connect_with_register_blockchain(0)
-    tx_hash=contract.functions.registerUser(int(id),email,name,int(password)).transact()
-    web3.eth.waitForTransactionReceipt(tx_hash)
-    return (redirect('/login'))
+    session['id']=id
+    session['name']=name
+    session['password']=password
+    global otp_created
+    emailId=request.form['emailId']
+    otp_created=random.randint(1800,9999)
+    print(otp_created)
+    verifyIdentity(emailId)
+    while True:
+        try:
+            a=sendotp(otp_created,'OTP to register',emailId)
+            if(a):
+                break
+            else:
+                continue
+        except:
+            time.sleep(10)
+    session['email']=emailId
+    return render_template('otp.html')
 
 @app.route('/loginUser',methods=['POST','GET'])
 def loginUser():
@@ -130,8 +152,10 @@ def loginUser():
     print(id,password)
     contract,web3=connect_with_register_blockchain(0)
     state=contract.functions.loginUser(id,password).call()
-    print(state)
-    return (redirect('/dashboard'))
+    if(state):
+        return (redirect('/dashboard'))
+    else:
+        return render_template('login.html')
 
 @app.route('/propertyOTPForm',methods=['POST','GET'])
 def propertyOTPFormPage():
@@ -164,7 +188,7 @@ def registerPropertyForm():
     ownerIndex=_ids.index(ownerId)
     emailId=_emails[ownerIndex]
     otp_created=random.randint(1800,9999)
-    
+    print(otp_created)
     while True:
         try:
             a=sendotp(otp_created,'OTP to register property',emailId)
@@ -197,7 +221,7 @@ def transferPropertyForm():
     ownerIndex=_ids.index(ownerId)
     emailId=_emails[ownerIndex]
     otp_created=random.randint(1800,9999)
-    
+    print(otp_created)
     while True:
         try:
             a=sendotp(otp_created,'OTP to transfer property',emailId)
