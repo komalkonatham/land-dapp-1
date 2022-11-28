@@ -28,7 +28,14 @@ contract register {
     _emails.push(email);
 
   }
-
+  function getusername(uint id) public view returns(string memory name){
+    uint i;
+    for(i=0;i<_ids.length;i++) {
+      if(id==_ids[i]) {
+        return _names[i];
+      }
+    }
+  } 
   function loginUser(uint id,uint password)  public view returns(bool){
 
     uint i;

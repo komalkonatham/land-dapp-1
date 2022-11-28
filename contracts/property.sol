@@ -37,13 +37,16 @@ contract property {
     return (_propertyId,_ownerId,_propertyData,_size);
   }
 
-  function buyProperty(uint propertyID, uint newOwner) public {
-
+  function buyProperty(uint propertyID, uint newOwner) public{
       uint i;
       for(i=0;i<_propertyId.length;i++) {
         if(_propertyId[i]==propertyID) {
+            
           _ownerId[i].push(newOwner);
         }
       }
+
   }
+
+  
 }

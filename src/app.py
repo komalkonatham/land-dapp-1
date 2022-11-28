@@ -83,9 +83,9 @@ def verifyOTPFormPage():
         contract,web3=connect_with_register_blockchain(0)
         tx_hash=contract.functions.registerUser(int(id),email,name,int(password)).transact()
         web3.eth.waitForTransactionReceipt(tx_hash)    
-        return redirect('/register')
+        return redirect('/logonreg')
     else:
-        return redirect('/linkEmail')
+        return redirect('/dashboard')
 @app.route('/register')
 def registerPage():
     return render_template('register.html')
@@ -96,7 +96,38 @@ def loginPage():
 
 @app.route('/registerProperty')
 def registerPropertyPage():
-    return render_template('registerproperty.html')
+    ids = session['ids']
+    return render_template('registerproperty.html',id = ids)
+
+@app.route('/details/<indexid>')
+def Detailspage(indexid):
+    
+    contract,web3=connect_with_property_blockchain(0)
+    _propertyId,_ownerId,_propertyData,_size=contract.functions.viewProperties().call()
+    print(_propertyId,_ownerId,_propertyData,_size)
+    contract,web3=connect_with_register_blockchain(0)
+    _ids,_names,_emails=contract.functions.viewUsers().call()
+   #contract,web3=connect_with_register_blockchain(0)
+    #_ownerIds = contract.variable._ownerId
+    id = session['ids']
+    print(_ownerId[0][1],"owner Id")
+
+    data=[]
+      
+    dummy=[]
+    ownerIndex=_ids.index(_ownerId[int(indexid)][-1])
+    dummy.append(_propertyId[int(indexid)])
+    dummy.append(_names[ownerIndex])
+    dummy.append(_propertyData[int(indexid)])
+    dummy.append(_size[int(indexid)])
+    data.append(dummy)
+    print(_ids,_names,_emails)
+    latlang = _propertyData[int(indexid)]
+    lat = _propertyData[int(indexid)].split(',')
+    print(lat[0])
+    r = arraytopoly(latlang)
+
+    return render_template('details.html',len=len(data),dashboard_data=data,lat = lat,ownerIds = _ownerId[int(indexid)])
 
 @app.route('/dashboard')
 def dashboardPage():
@@ -106,8 +137,25 @@ def dashboardPage():
     contract,web3=connect_with_register_blockchain(0)
     _ids,_names,_emails=contract.functions.viewUsers().call()
     print(_ids,_names,_emails)
-
+    name = session['names']
     data=[]
+    ids = session['ids']
+    a = []
+    b = []
+    for i in range(len(_propertyId)): 
+        print(_ownerId[i][-1])       
+        if(_ownerId[i][-1] == ids):
+            print('shdfjkdshfjksgfkgsajgkhjfhskfhskhfkjhfksjfhsahfsjhfkshfsjkh')
+            a.append(_propertyId[i])
+            a.append(_names[i])
+            a.append(_propertyData[i])
+            b.append(a)
+        else:
+            a.append('N')
+            a.append('N')
+            a.append('N')
+            b.append(a)
+
     try:
         for i in range(len(_propertyId)):
             dummy=[]
@@ -119,7 +167,7 @@ def dashboardPage():
             data.append(dummy)
     except:
         data=['NA','NA','NA']
-    return render_template('dashboard.html',len=len(data),dashboard_data=data)
+    return render_template('dashboard.html',len=len(data),dashboard_data=data,name = name,id = ids,other = b)
 
 @app.route('/registerUser',methods=['POST','GET'])
 def registerUser():
@@ -132,7 +180,7 @@ def registerUser():
     global otp_created
     emailId=request.form['emailId']
     otp_created=random.randint(1800,9999)
-    print(otp_created)
+    print(otp_created)  
     verifyIdentity(emailId)
     while True:
         try:
@@ -146,6 +194,20 @@ def registerUser():
     session['email']=emailId
     return render_template('otp.html')
 
+@app.route('/logonreg')
+def logonreg():
+    id = int(session['id'])
+    password = int(session['password'])
+    contract,web3=connect_with_register_blockchain(0)
+    state=contract.functions.loginUser(id,password).call()
+    name = contract.functions.getusername(id).call()
+    if(state):
+        session['ids'] = id
+        session['names'] = name
+        return (redirect('/dashboard'))
+    else:
+        return render_template('login.html')
+    
 @app.route('/loginUser',methods=['POST','GET'])
 def loginUser():
     id=int(request.form['userid'])
@@ -153,7 +215,11 @@ def loginUser():
     print(id,password)
     contract,web3=connect_with_register_blockchain(0)
     state=contract.functions.loginUser(id,password).call()
+    name = contract.functions.getusername(id).call()
+    print(name)
     if(state):
+        session['ids'] = id
+        session['unames'] = name
         return (redirect('/dashboard'))
     else:
         return render_template('login.html')
@@ -186,6 +252,7 @@ def registerPropertyForm():
     session['ownerId']=ownerId
     session['propertyData']=propertyData
     session['propertysize']=propertysize
+    
     contract,web3=connect_with_register_blockchain(0)
     _ids,_names,_emails=contract.functions.viewUsers().call()
     print(_ids,_names,_emails)
@@ -193,22 +260,30 @@ def registerPropertyForm():
     emailId=_emails[ownerIndex]
     otp_created=random.randint(1800,9999)
     print(otp_created)
+    name = session['names']
+    
     while True:
         try:
             a=sendotp(otp_created,'OTP to register property',emailId)
+
             if(a):
+                print('hjdshfkj')
                 break
             else:
+                print('no')
                 continue
         except:
+            
             time.sleep(10)
             continue
     session['email']=emailId
+    
     return render_template('propertyotp.html')
 
 @app.route('/transferProperty')
 def transferPropertyPage():
-    return render_template('transferproperty.html')
+    ids = session['ids']
+    return render_template('transferproperty.html',id = ids)
 
 @app.route('/transferPropertyForm',methods=['POST','GET'])
 def transferPropertyForm():
@@ -216,7 +291,7 @@ def transferPropertyForm():
     propertyId=int(request.form['propertyId'])
     buyerId=int(request.form['buyerId'])
     contract,web3=connect_with_property_blockchain(0)
-    _propertyId,_ownerId,_propertyData=contract.functions.viewProperties().call()
+    _propertyId,_ownerId,_propertyData,_size=contract.functions.viewProperties().call()
     propertyIndex=_propertyId.index(propertyId)
     ownerId=_ownerId[propertyIndex][-1]
     contract,web3=connect_with_register_blockchain(0)
@@ -227,6 +302,7 @@ def transferPropertyForm():
     otp_created=random.randint(1800,9999)
     print(otp_created)
     while True:
+        
         try:
             a=sendotp(otp_created,'OTP to transfer property',emailId)
             if(a):
@@ -250,6 +326,7 @@ def transferpropertyOTPForm():
         contract,web3=connect_with_property_blockchain(0)
         tx_hash=contract.functions.buyProperty(propertyId,buyerId).transact()
         web3.eth.waitForTransactionReceipt(tx_hash)
+        print(tx_hash)
         return (redirect('/dashboard'))
     else:
         return (redirect('/transferProperty'))
@@ -257,6 +334,20 @@ def transferpropertyOTPForm():
 @app.route('/logout')
 def logoutPage():
     return (redirect('/'))
+
+
+def arraytopoly(a = [1,2,3,4]):
+    r=[]
+    
+    for i in range(len(a)):
+        b={}
+        if(i%2 == 1):
+            continue
+        b["lat"] = a[i]
+        b["lng"] = a[i+1]
+        r.append(b)
+    return r
+
 
 if __name__=="__main__":
     app.run(debug=True)

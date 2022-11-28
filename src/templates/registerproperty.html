@@ -54,6 +54,7 @@
 				<li class="nav-item"><a href="/transferProperty" class="nav-link">Transfer Property</a></li>
                 <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
 	        </ul>
+			<a class="navbar-brand">{{name}}<span>User Id : {{id}}</span></a>
 	      </div>
 	    </div>
 	  </nav>
@@ -68,18 +69,24 @@
 				  
 				  <div class="form-group">
 					 <label for="propertyId">Your Property Id:</label>
-					 <input type="number" class="form-control" id="propertyId" placeholder="Enter your propertyId" name="propertyId">
+					 <input type="number" class="form-control" id="propertyId" placeholder="Enter your propertyId" name="propertyId">     
 				  </div>
-				  
+
+				  <div class="form-group">
+					<label for="propertysize">Aadhar No:</label>
+					<input type="text" class="form-control" id="aadhar" placeholder="Enter your AADHAR NO" name="aadharno" maxlength="12" >
+				  </div>
+				
 				  <div class="form-group">
 					<label for="ownerId">Owner id:</label>
 					<input type="number" class="form-control" id="ownerId" placeholder="Enter Owner Id" name="ownerId">
 				 </div>
 
 				  <div class="form-group">
-					<label for="propertyData">Enter Property Data:</label>
-					<input type="text" class="form-control" id="propertyData" placeholder="Enter your propertyData" name="propertyData">
+					<label for="propertyData">Enter Property Location:</label>
+					<input type="text" class="form-control" id="propertyData" placeholder="Enter your propertyLocation" name="propertyData">
 				  </div>
+				 
 
 				  <div class="form-group">
 					<label for="propertysize">Enter Property size:(in cents)</label>

@@ -6643,7 +6643,7 @@ button.bg-dark:focus {
 
 .mt-5,
 .my-5 {
-  margin-top: 3rem !important; }
+  margin-top: 2rem !important; }
 
 .mr-5,
 .mx-5 {
@@ -6651,7 +6651,7 @@ button.bg-dark:focus {
 
 .mb-5,
 .my-5 {
-  margin-bottom: 3rem !important; }
+  margin-bottom: 2rem !important; }
 
 .ml-5,
 .mx-5 {
@@ -8162,7 +8162,7 @@ h1, h2, h3, h4, h5,
   background: #f1bc31 !important; }
 
 .ftco-section {
-  padding: 7em 0; }
+  padding: 2em 0; }
 
 .ftco-no-pt {
   padding-top: 0; }
@@ -8365,6 +8365,7 @@ h1, h2, h3, h4, h5,
 
 .form-control {
   height: 46px !important;
+  width: 250px !important;
   background: #fff !important;
   color: #000 !important;
   font-size: 14px;

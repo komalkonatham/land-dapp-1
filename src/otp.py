@@ -12,6 +12,7 @@ def verifyIdentity(a):
     print(response)
 
 def sendotp(otp,sub,r):
+    
     client=boto3.client('ses',aws_access_key_id=accessKey,aws_secret_access_key=secretAccessKey,region_name=region)
     SENDER = "otp.service@makeskilled.com"
     RECIPIENT = r
@@ -37,10 +38,9 @@ def sendotp(otp,sub,r):
         'Subject': {'Charset': CHARSET,'Data': SUBJECT,},},
         Source=SENDER)
     except ClientError as e:
-        print(e.response['Error']['Message'])
+        
+        print(OTP)
         return True
     else:
-        print("Email sent! Message ID:"),
-        print(response['MessageId'])
         return True
 

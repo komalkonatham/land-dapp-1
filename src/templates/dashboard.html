@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	
 	<link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
-
+	
 	</head>
 	<body>
 	<section class="ftco-section">
@@ -25,7 +25,7 @@
 			<div class="container">
 				<div class="row justify-content-between">
 						<div class="col">
-							<p class="mb-0 phone"><span class="fa fa-phone"></span> <a href="#">+91-7780585572</a></p>
+							<p class="mb-0 phone"><span class="fa fa-phone"></span> <a href="#"></a></p>
 						</div>
 						<div class="col d-flex justify-content-end">
 							<div class="social-media">
@@ -54,8 +54,9 @@
 					<li class="nav-item"><a href="/registerProperty" class="nav-link">Register Property</a></li>
 					<li class="nav-item"><a href="/transferProperty" class="nav-link">Transfer Property</a></li>
 					<li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+					
 				</ul>
-	        
+				<a class="navbar-brand">{{name}}<span>User Id : {{id}}</span></a>
 	      </div>
 	    </div>
 	  </nav>
@@ -69,21 +70,25 @@
             <table class="table table-bordered">
                 <tr>
                     <th>Property Id</th>
-                    <th>Property Owner</th>/
-                    <th>Property Data</th>
+                    <th>Property Owner</th>
+                    <th>Property Location</th>
 					<th>Property size</th>
                 </tr>
+
                 {%for i in range(0, len)%}
                 <tr>
-                    <td>{{dashboard_data[i][0]}}</td>
+                    <td >{{dashboard_data[i][0]}}</td>
                     <td>{{dashboard_data[i][1]}}</td>
-                    <td>{{dashboard_data[i][2]}}</td>
+                    <td >{{dashboard_data[i][2]}} <right><u><a href="/details/{{i}}">(more details)</a></u></right> </td>
 					<td>{{dashboard_data[i][3]}}  cents</td>
-                </tr>
+					
+				</tr>
                 {%endfor%}
+				
             </table>
             </div>
         </div>
+		
 	</section>
 
 	<script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
